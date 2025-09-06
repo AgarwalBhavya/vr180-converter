@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./outputs:/app/../outputs
+      - ./models:/app/../models
+    # for local dev using host GPU, you would modify runtime: nvidia and use a CUDA base image

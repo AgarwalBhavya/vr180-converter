@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.venv_vr/
+
+# Streamlit cache
+.streamlit/
+
+# Video outputs
+*.mp4
+*.avi
+*.mov
+
+# Large data
+*.zip
+*.tar
+*.gz
