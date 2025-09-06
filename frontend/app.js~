@@ -1,0 +1,55 @@
+// Minimal frontend logic
+const uploadBtn = document.getElementById('uploadBtn');
+const fileInput = document.getElementById('fileInput');
+const statusBox = document.getElementById('statusBox');
+const stageEl = document.getElementById('stage');
+const progressBar = document.getElementById('progressBar');
+const percentEl = document.getElementById('percent');
+const previewArea = document.getElementById('previewArea');
+const downloadLink = document.getElementById('downloadLink');
+
+uploadBtn.onclick = async () => {
+  const f = fileInput.files[0];
+  if (!f) { alert('Choose a video first'); return; }
+  uploadBtn.disabled = true;
+  stageEl.textContent = 'Stage: uploading';
+  statusBox.style.display = 'block';
+  const form = new FormData();
+  form.append('video', f);
+
+  const resp = await fetch('/upload', { method: 'POST', body: form });
+  if (!resp.ok) { alert('Upload failed'); uploadBtn.disabled = false; return; }
+  const j = await resp.json();
+  const jobId = j.job_id;
+  stageEl.textContent = 'Stage: queued (job ' + jobId + ')';
+  poll(jobId);
+};
+
+let pollInterval = null;
+async function poll(jobId) {
+  if (pollInterval) clearInterval(pollInterval);
+  pollInterval = setInterval(async () => {
+    const r = await fetch('/status?job_id=' + jobId);
+    if (!r.ok) return;
+    const s = await r.json();
+    stageEl.textContent = 'Stage: ' + (s.stage || 'starting');
+    const p = Math.round((s.progress || 0) * 100);
+    progressBar.style.width = p + '%';
+    percentEl.textContent = p + '%';
+    if (s.preview) {
+      previewArea.innerHTML = `<video controls src="${s.preview}"></video>`;
+    }
+    if (s.stage === 'done') {
+      clearInterval(pollInterval);
+      downloadLink.style.display = 'inline-block';
+      downloadLink.href = s.download;
+      stageEl.textContent = 'Stage: done';
+      uploadBtn.disabled = false;
+    }
+    if (s.stage === 'failed') {
+      clearInterval(pollInterval);
+      stageEl.textContent = 'Stage: failed';
+      uploadBtn.disabled = false;
+    }
+  }, 2000);
+}

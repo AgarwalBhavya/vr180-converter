@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>VR180 Converter — Upload</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>VR180 Converter (MVP)</h1>
+
+    <div id="upload-area">
+      <input id="fileInput" type="file" accept="video/*">
+      <button id="uploadBtn">Upload & Convert</button>
+    </div>
+
+    <div id="statusBox" style="display:none;">
+      <div id="stage">Stage: -</div>
+      <div class="progress">
+        <div id="progressBar" class="bar"></div>
+      </div>
+      <div id="percent">0%</div>
+      <div id="previewArea"></div>
+      <a id="downloadLink" href="#" style="display:none;" target="_blank">Download final VR180 MP4</a>
+    </div>
+
+    <p class="hint">Tip: Use short 5–15s clips for best speed in demo.</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
