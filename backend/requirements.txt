@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+python-multipart
+aiofiles
+opencv-python-headless
+numpy
+torch
+torchvision
+tqdm
+pillow
+# If you plan to use LaMa as a package, install here (optional)
+# lama-cleaner or a local LaMa repo can be used; keep as optional.
