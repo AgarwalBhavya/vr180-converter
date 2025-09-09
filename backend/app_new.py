@@ -74,12 +74,20 @@ if uploaded_file is not None:
         f.write(uploaded_file.read())
 
     # --- SBS Conversion (VR180) ---
+    # if not output_sbs.exists():
+    #     st.info("🔄 Converting to Side-by-Side (VR180)...")
+    #     subprocess.run([
+    #         "ffmpeg", "-i", str(input_path),
+    #         "-vf", "scale=iw/2:ih/2,tile=1x2",
+    #         "-c:a", "copy", str(output_sbs)
+    #     ], check=True)
     if not output_sbs.exists():
         st.info("🔄 Converting to Side-by-Side (VR180)...")
         subprocess.run([
             "ffmpeg", "-i", str(input_path),
-            "-vf", "scale=iw/2:ih/2,tile=1x2",
-            "-c:a", "copy", str(output_sbs)
+            "-filter_complex",
+            "[0:v]split=2[left][right]; [left]scale=iw/2:ih[left_scaled]; [right]scale=iw/2:ih[right_scaled]; [left_scaled][right_scaled]hstack=2[v]",
+            "-map", "[v]", "-c:a", "copy", str(output_sbs)
         ], check=True)
 
     # --- Anaglyph Conversion (Red-Cyan) ---
@@ -118,3 +126,4 @@ if uploaded_file is not None:
             mime="video/mp4"
         )
         st.caption("Anaglyph works with red-cyan 3D glasses")
+
